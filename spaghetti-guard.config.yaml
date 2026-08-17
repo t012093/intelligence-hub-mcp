@@ -1,0 +1,38 @@
+version: 1
+language: python
+max_file_lines: 500
+architecture:
+  enforcer: auto
+  boundaries:
+    - from: "intelligence_hub.core"
+      must_not_import:
+        - "intelligence_hub.intake"
+        - "intelligence_hub.storage"
+        - "intelligence_hub.analysis"
+        - "intelligence_hub.scheduler"
+        - "intelligence_hub.mcp"
+    - from: "intelligence_hub.intake"
+      must_not_import:
+        - "intelligence_hub.storage"
+        - "intelligence_hub.analysis"
+        - "intelligence_hub.scheduler"
+        - "intelligence_hub.mcp"
+    - from: "intelligence_hub.storage"
+      must_not_import:
+        - "intelligence_hub.intake"
+        - "intelligence_hub.analysis"
+        - "intelligence_hub.scheduler"
+        - "intelligence_hub.mcp"
+    - from: "intelligence_hub.analysis"
+      must_not_import:
+        - "intelligence_hub.intake"
+        - "intelligence_hub.storage"
+        - "intelligence_hub.scheduler"
+        - "intelligence_hub.mcp"
+
+llm:
+  mode: agent-delegate
+python:
+  package_manager: uv
+retry:
+  max_auto_fix_attempts: 3

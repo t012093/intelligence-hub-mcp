@@ -1,0 +1,110 @@
+version: "1.0"
+
+# ==========================================
+# ① 定点観測コアチャンネル (80% パレート枠)
+# ==========================================
+core_channels:
+  # --- AI / 開発動向 / バイブコーディング ---
+  - id: "zenn_trend"
+    category: "ai_engineering"
+    name: "Zenn Tech Feed"
+    type: "rss"
+    url: "https://zenn.dev/feed"
+    interval_hours: 6
+
+  - id: "hn_top"
+    category: "ai_engineering"
+    name: "Hacker News Top"
+    type: "api_hn"
+    endpoint: "topstories"
+    limit: 20
+    interval_hours: 4
+
+  - id: "github_trending_ai"
+    category: "ai_engineering"
+    name: "GitHub Trending (Python & TypeScript)"
+    type: "github_trending"
+    languages: ["python", "typescript"]
+    interval_hours: 12
+
+  - id: "arxiv_ai"
+    category: "ai_engineering"
+    name: "arXiv AI & Computation (cs.AI, cs.CL, cs.RO)"
+    type: "arxiv_query"
+    categories: ["cs.AI", "cs.CL", "cs.RO"]
+    limit: 15
+    interval_hours: 24
+
+  # --- 先端サイエンス: 合成生物学 (Synthetic Biology) ---
+  - id: "biorxiv_synthbio"
+    category: "synthetic_biology"
+    name: "bioRxiv Synthetic Biology"
+    type: "rss"
+    url: "https://connect.biorxiv.org/biorxiv_xml.php?subject=synthetic_biology"
+    interval_hours: 24
+
+  # --- 先端サイエンス: 神経科学・脳科学 (Neuroscience) ---
+  - id: "biorxiv_neuro"
+    category: "neuroscience"
+    name: "bioRxiv Neuroscience"
+    type: "rss"
+    url: "https://connect.biorxiv.org/biorxiv_xml.php?subject=neuroscience"
+    interval_hours: 24
+
+  # --- 医療・バイオヘルス (Medicine / Health) ---
+  - id: "medrxiv_med"
+    category: "medicine"
+    name: "medRxiv General Medicine"
+    type: "rss"
+    url: "https://connect.biorxiv.org/biorxiv_xml.php?subject=infectious_diseases"
+    interval_hours: 24
+
+  # --- 暗号資産・Web3 (Crypto / Decentralization) ---
+  - id: "ethresearch_posts"
+    category: "crypto"
+    name: "Ethereum Research"
+    type: "rss"
+    url: "https://ethresear.ch/posts.rss"
+    interval_hours: 12
+
+  - id: "paradigm_research"
+    category: "crypto"
+    name: "Paradigm Research Blog"
+    type: "rss"
+    url: "https://www.paradigm.xyz/rss.xml"
+    interval_hours: 24
+
+  # --- リバースエンジニアリング / セキュリティ ---
+  - id: "github_reverse_eng"
+    category: "reverse_engineering"
+    name: "GitHub Topics: Reverse Engineering"
+    type: "github_trending"
+    languages: ["c", "rust", "cpp"]
+    interval_hours: 24
+
+# ==========================================
+# ② セレンディピティ枠 (20% 飛び地急上昇)
+# ==========================================
+serendipity_channels:
+  - id: "hn_show"
+    category: "serendipity"
+    name: "Hacker News Show HN"
+    type: "api_hn"
+    endpoint: "showstories"
+    limit: 15
+    interval_hours: 6
+
+  - id: "github_trending_all"
+    category: "serendipity"
+    name: "GitHub Trending (All Languages)"
+    type: "github_trending"
+    languages: [""]
+    interval_hours: 12
+
+  - id: "hn_best"
+    category: "serendipity"
+    name: "Hacker News Best Stories"
+    type: "api_hn"
+    endpoint: "beststories"
+    limit: 15
+    interval_hours: 8
