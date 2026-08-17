@@ -34,22 +34,25 @@ def sample_digest():
     )
 
 
-def test_coral_publisher_payload_formatting(sample_digest):
+@pytest.mark.asyncio
+async def test_coral_publisher_payload_formatting(sample_digest):
     publisher = CoralPublisher()
-    payload = publisher.format_article_payload(sample_digest, status="draft")
+    payload = await publisher.format_article_payload(sample_digest, status="draft")
 
-    assert "異分野交差点インテリジェンス・ダイジェスト" in payload["title"]
+    assert "暗号分散検証とLLMサービングの越境融合" in payload["title"]
     assert payload["author_id"] == DEFAULT_AUTHOR_ID
     assert payload["status"] == "draft"
     assert "テクノロジー" in payload["themes"]
     assert "Crossover" in payload["tags"]
     assert len(payload["excerpt"]) <= 120
+    assert payload["reading_time"] >= 8
 
     # WIRED Structure check
     content = payload["content"]
-    assert "<h2>The Hook (導入)</h2>" in content
-    assert "<h2>The Paradigm Shift (越境と構造変革)</h2>" in content
-    assert "<h2>The Philosophical Horizon (結びと問い)</h2>" in content
+    assert 'style="font-size: 1.15em; line-height: 1.8;' in content  # Italic scene-setting lead
+    assert "<h2>The Hook：" in content
+    assert "<h2>The Paradigm Shift：" in content
+    assert "<h2>The Philosophical Horizon：" in content
     assert "<h2>参考文献・出典（References）</h2>" in content
     assert "<table" in content
     assert "https://ethresear.ch/t/sample" in content

@@ -105,8 +105,10 @@ class PublishingPipeline:
 
 def main():
     """CLI runner for intelligence-hub-publish."""
+    import os
+    publish_status = os.getenv("PUBLISH_STATUS", "published")
     pipeline = PublishingPipeline()
-    res = asyncio.run(pipeline.run())
+    res = asyncio.run(pipeline.run(publish_status=publish_status))
     print("\n" + "=" * 60)
     print("🚀 PUBLICATION PIPELINE COMPLETED")
     print("=" * 60)
