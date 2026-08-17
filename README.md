@@ -2,7 +2,7 @@
 
 > Multi-Domain Intelligence Intake, Deep Technical Explainer, 80:20 Crossover Synthesis & Multi-Channel Publishing MCP Server
 
-異なる複数の先端分野（自律型AI/開発動向、合成生物学、神経科学、暗号プロトコル、分子医療、低レイヤー解析）の最新動向を並行収集し、**4層ディープリサーチ** ＆ **4大目的別コンテンツ生成（実践技術ブログ / 先端論文解説 / プロトコル構造論 / WIRED交差点特集）** を行って自社メディア（Coral Magazine）やSNSへ自動配信するインテリジェンス・ハブ MCP サーバー。
+異なる複数の先端分野（自律型AI/開発動向、合成生物学、神経科学、暗号プロトコル、分子医療、低レイヤー解析）の最新動向を並行収集し、**一次ソース本文の自動深掘り（Deep Fetch）** ＆ **4大目的別コンテンツ生成（実践技術ブログ / 先端論文解説 / プロトコル構造論 / WIRED交差点特集）** を行って自社メディア（Coral Magazine）やSNSへ自動配信するインテリジェンス・ハブ MCP サーバー。
 
 ---
 
@@ -46,9 +46,9 @@
 
 ## 🛡️ 内容の薄さを排除する「4 層ディープ・リサーチ」
 
-1. **Deep Fetch**: GitHub トレンド上位リポジトリの `README.md`（冒頭説明・Usageコード）および arXiv Abstract を自動抽出。
-2. **Two-Pass Autonomous Research**: 重要トピックについて `search_web` や `ocr-mcp-server` を自律起動し、公式ドキュメントやベンチマークを追跡調査。
-3. **Quality Gate**: コードブロック（` ```bash ` / ` ```python `）や比較テーブル（`<table>`）の有無を自動検証。
+1. **Deep Fetch**: GitHub トレンド上位リポジトリの `README.md`（冒頭説明・Usageコード）および arXiv Abstract を自動抽出（`main`/`master` フォールバック対応）。
+2. **Genre Router**: `Category × SourceType` に基づき、最適なコンテンツ生成エンジンへ自動ディスパッチ。
+3. **Genre-Specific Quality Gate**: コードブロック（` ```bash ` / ` ```python `）や比較テーブル（`<table>`）、定量的ベンチマーク数値の有無をジャンル別に自動検証。
 4. **Multi-Channel Distribution**: Coral Magazine（HTML）、X (140字 3連スレッド)、Note (エッセイ) を同時生成。
 
 ---
