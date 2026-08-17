@@ -21,6 +21,16 @@ CATEGORY_TO_CORAL_THEME = {
     "serendipity": "テクノロジー",
 }
 
+CATEGORY_JA_LABELS = {
+    "ai_engineering": "自律型AI・計算知能",
+    "synthetic_biology": "合成生物学・遺伝子回路",
+    "neuroscience": "脳神経科学・シナプス工学",
+    "medicine": "先端分子医療",
+    "crypto": "分散暗号プロトコル",
+    "reverse_engineering": "低レイヤーバイナリ解析",
+    "serendipity": "創発的オープンソース",
+}
+
 
 class CrossoverAnalyzer:
     """Discovers cross-domain intersections among diverse intelligence records."""
@@ -108,22 +118,28 @@ class CrossoverAnalyzer:
         r1 = next(r for r in records if r.category == c1)
         r2 = next(r for r in records if r.category == c2)
 
+        ja1 = CATEGORY_JA_LABELS.get(c1, c1)
+        ja2 = CATEGORY_JA_LABELS.get(c2, c2)
+
         coral_themes = list(
             {CATEGORY_TO_CORAL_THEME.get(c1, "テクノロジー"), CATEGORY_TO_CORAL_THEME.get(c2, "テクノロジー")}
         )
 
+        theme_title = f"{ja1} と {ja2} の幾何学的共鳴"
+        core_concept = f"異分野間（{ja1} × {ja2}）におけるモデリング・最適化アプローチの構造的同型性"
+
         return [
             CrossoverTheme(
-                theme_title=f"{c1.capitalize()} と {c2.capitalize()} の構造的アナロジー",
+                theme_title=theme_title,
                 domains=[c1, c2],
-                core_concept="異分野間におけるモデリング・最適化アプローチの共通性",
-                synergy_description=f"{r1.title} の手法と {r2.title} の問題領域における潜在的なシナジー。",
+                core_concept=core_concept,
+                synergy_description=f"「{r1.title[:50]}」の数理的アプローチと「{r2.title[:50]}」の課題領域が交差することで生じる創発的パラダイム。",
                 actionable_implications=[
-                    f"{c1} の最新手法を {c2} のパイプラインに適用可能か検証する",
-                    "共通のデータ構造による統合ベンチマークの作成",
+                    f"{ja1} の最新アルゴリズムを {ja2} の処理パイプラインへ転用・検証する",
+                    "共通のデータ表現構造に基づく統合ベンチマークの策定",
                 ],
                 referenced_record_ids=[r1.id, r2.id],
                 suggested_themes=coral_themes,
-                suggested_tags=[c1, c2, "Crossover"],
+                suggested_tags=[c1, c2, "Crossover", "80:20 Analysis"],
             )
         ]

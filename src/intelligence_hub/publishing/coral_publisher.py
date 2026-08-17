@@ -55,14 +55,15 @@ class CoralPublisher:
         themes = digest.suggested_themes or ["テクノロジー"]
         tags = digest.suggested_tags or ["Crossover", "Intelligence", "80:20"]
 
-        now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         main_theme_title = digest.crossover_themes[0].theme_title if digest.crossover_themes else "越境する知性と計算パラダイム"
-        title = f"{main_theme_title}――80:20 インテリジェンス・ダイジェスト ({now_str})"
+        # WIRED hook headline rule (concise, sharp, under 45 chars)
+        title = f"境界線の融解：{main_theme_title}"
+        if len(title) > 42:
+            title = main_theme_title[:40]
         slug = f"crossover-digest-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
 
         # Generate Excerpt (< 120 chars)
-        themes_summary = "、".join([t.theme_title for t in digest.crossover_themes[:2]])
-        excerpt = f"【80:20交差点分析】{themes_summary}。先端AI・バイオ・Web3・低レイヤーの越境シナジーをWIRED視点で読み解く。"[:120]
+        excerpt = f"【80:20越境分析】{main_theme_title}。先端AI・バイオ・Web3・低レイヤーの衝突がもたらす新たな創発パラダイムを読み解く。"[:120]
 
         # Generate full WIRED-compliant HTML (via LLM or structured high-density fallback)
         content_html = await self._generate_wired_html(digest)
