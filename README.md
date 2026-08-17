@@ -1,12 +1,12 @@
 # 🌐 intelligence-hub-mcp
 
-> Multi-Domain Intelligence Intake, Deep Technical Explainer, 80:20 Crossover Synthesis & Multi-Channel Publishing MCP Server
+> Multi-Domain Intelligence Intake, Deep Academic Research, Tech Explainer, 80:20 Crossover Synthesis & Multi-Channel Publishing MCP Server
 
-異なる複数の先端分野（自律型AI/開発動向、合成生物学、神経科学、暗号プロトコル、分子医療、低レイヤー解析）の最新動向を並行収集し、**一次ソース本文の自動深掘り（Deep Fetch）** ＆ **4大目的別コンテンツ生成（実践技術ブログ / 先端論文解説 / プロトコル構造論 / WIRED交差点特集）** を行って自社メディア（Coral Magazine）やSNSへ自動配信するインテリジェンス・ハブ MCP サーバー。
+異なる複数の先端分野（自律型AI/開発動向、合成生物学、神経科学、暗号プロトコル、分子医療、低レイヤー解析）の最新動向を並行収集し、**`ocr-mcp-server` 学術資源（4大学術DB・PDF全文OCR・MAD査読）のフル活用** ＆ **4大目的別コンテンツ生成（実践技術ブログ / 先端論文解説 / プロトコル構造論 / WIRED交差点特集）** を行って自社メディア（Coral Magazine）やSNSへ自動配信するインテリジェンス・ハブ MCP サーバー。
 
 ---
 
-## 🏛️ Hermes エコシステム ＆ 3層アーキテクチャ
+## 🏛️ Hermes エコシステム ＆ Tri-MCP 協調アーキテクチャ
 
 本 MCP サーバーは **Hermes AI Agent (Master Orchestrator)** の傘下で、学術深掘り（`ocr-mcp-server`）および自社メディア配信（`news-site-coral`）と対等なピアとして連携します。
 
@@ -17,8 +17,8 @@
                     └───────┬───────────────┬───────┘
                             │               │
             ┌───────────────┴────┐     ┌────┴──────────────┐
-            │ intelligence-hub-mcp│     │  ocr-mcp-server   │
-            │ (Deep Research/Pub)│     │ (Deep MAD Review) │
+            │ intelligence-hub-mcp│◄────┤  ocr-mcp-server   │
+            │ (Deep Research/Pub)│     │ (PDF OCR/MAD/DBs) │
             └────────────────────┘     └───────────────────┘
                             │                   │
                             └─────────┬─────────┘
@@ -38,18 +38,18 @@
 | ジャンル | 対象ソース | 読者・用途 | 必須構成要素 |
 |:---|:---|:---|:---|
 | **① OSS・ツール徹底解剖**<br>*(Tech Deep-Dive)* | GitHub Trending, HN Show, Zenn | 実務エンジニア向け<br>「導入・活用」 | ・**TL;DR** (要点・置換対象)<br>・**How it works** (仕組み・高速化原理)<br>・**Code** (インストール & コードスニペット)<br>・**Comparison** (競合との定量比較表) |
-| **② 先端論文・サイエンス解説**<br>*(Research Digest)* | arXiv (cs.AI/RO), bioRxiv, medRxiv | リサーチャー/AI技術者向け<br>「最新理論の把握」 | ・先行研究の限界 (Pain)<br>・新規提案手法の数理・モデル構造<br>・**実験結果・ベンチマーク数値**<br>・実用化への課題 |
+| **② 先端論文・サイエンス解説**<br>*(Research Digest)* | arXiv (cs.AI/RO), bioRxiv, medRxiv<br>+ `ocr-mcp-server` 学術DB | リサーチャー/AI技術者向け<br>「最新理論の深掘り」 | ・**完全書誌カード** (所属大学・学会採択・年月)<br>・**研究の系譜** (先行サーベイ・引用グラフ)<br>・**生ベンチマーク表** (PDF Table抽出データ)<br>・**MAD 査読クリティーク** (強み・限界) |
 | **③ プロトコル・セキュリティ構造論**<br>*(Protocol & Security)* | Ethereum Research, Vitalik Blog, 逆解析 | Web3/セキュリティエンジニア向け<br>「設計思想・安全性」 | ・設計背景 (なぜこの仕様が必要か)<br>・暗号学的・プロトコル的仕組み<br>・**攻撃ベクトルとセキュリティ対策** |
 | **④ 異分野交差点ナラティブ**<br>*(WIRED Crossover)* | 上記複数ドメインの横断 | 意思決定者/知的読者向け<br>「大局的パラダイムシフト」 | ・Scene-setting (Italicリード文)<br>・The Paradigm Shift (越境シナジー+比較表)<br>・The Philosophical Horizon (未来への問い) |
 
 ---
 
-## 🛡️ 内容の薄さを排除する「4 層ディープ・リサーチ」
+## 🛡️ 学術資源フル活用の 4 層ディープ・リサーチ
 
-1. **Deep Fetch**: GitHub トレンド上位リポジトリの `README.md`（冒頭説明・Usageコード）および arXiv Abstract を自動抽出（`main`/`master` フォールバック対応）。
-2. **Genre Router**: `Category × SourceType` に基づき、最適なコンテンツ生成エンジンへ自動ディスパッチ。
-3. **Genre-Specific Quality Gate**: コードブロック（` ```bash ` / ` ```python `）や比較テーブル（`<table>`）、定量的ベンチマーク数値の有無をジャンル別に自動検証。
-4. **Multi-Channel Distribution**: Coral Magazine（HTML）、X (140字 3連スレッド)、Note (エッセイ) を同時生成。
+1. **Deep Fetch & 4大 学術DB**: `openalex_client` / `crossref_client` / `semantic_scholar_client` から、著者所属、学会採択、引用グラフ、先行サーベイを自動解決。
+2. **PDF Resolver & Surya OCR**: arXiv / bioRxiv の原著 PDF を自動解決し、Table（生データ数値）や数式を含む全文を Markdown 抽出。
+3. **Multi-Agent Debate (MAD) 査読**: Proponent（推進派）、Critic（批判派・再現性検証）、Judge（総括）による多角的査読レポートを生成。
+4. **Quality Gate & Multi-Channel Distribution**: Coral Magazine（HTML）、X (140字 3連スレッド)、Note (エッセイ) を同時生成。
 
 ---
 
@@ -72,11 +72,17 @@ npx @naoya.k/spaghetti-guard check
 
 ### 自動収集 ＆ パブリッシュ CLI の実行
 ```bash
-# 全チャンネル収集 ＋ 記事起稿 ＋ Xスレッド生成を一括実行
-uv run intelligence-hub-publish
+# 全チャンネル収集 ＋ ジャンル別記事起稿（例: 論文解説）
+uv run intelligence-hub-publish --genre paper
 
-# 定期収集のみ実行
-uv run intelligence-hub-cron
+# OSS 技術解剖
+uv run intelligence-hub-publish --genre tech
+
+# プロトコル構造論
+uv run intelligence-hub-publish --genre protocol
+
+# WIRED 異分野交差点特集
+uv run intelligence-hub-publish --genre crossover
 ```
 
 ### MCP サーバーの起動 (Stdio Transport)
