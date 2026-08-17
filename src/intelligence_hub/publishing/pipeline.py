@@ -129,7 +129,15 @@ class PublishingPipeline:
 
             pub_result = await self.publisher.publish(digest, status=publish_status)
             x_threads = self.publisher.generate_x_threads(digest)
-            payload = ArticlePayload(**(pub_result.get("payload") or {}), genre="crossover_feature")
+            raw_payload = pub_result.get("payload") or {}
+            payload = ArticlePayload(**raw_payload) if "title" in raw_payload else ArticlePayload(
+                title=digest.markdown_report.split("\n")[0].replace("#", "").strip(),
+                slug=f"crossover-{timestamp_slug}",
+                content=digest.markdown_report,
+                excerpt="Crossover Feature",
+                genre="crossover_feature",
+                author_id="default",
+            )
             self.quality_gate.validate(payload)
             artifact_prefix = "crossover"
 
