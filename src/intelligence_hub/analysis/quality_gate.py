@@ -47,6 +47,10 @@ class QualityGate:
             if "<table" not in content:
                 issues.append("Missing comparison table for Crossover synthesis")
 
+            # Scientific literature / Thought injection required
+            if not ("思想" in content or "古典" in content or "示唆" in content or "哲学" in content or "Philosophical" in content):
+                issues.append("Missing foundational scientific thought or philosophical injection")
+
             # Reference link required
             if "<a href=" not in content:
                 issues.append("Missing primary source reference links")

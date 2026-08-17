@@ -199,15 +199,33 @@ class CoralPublisher:
             f'{themes_section}'
         )
 
-        # 4. The Philosophical Horizon
+        # 4. The Philosophical Horizon with Deep Scientific Thought Injection
+        from intelligence_hub.analysis.thought_reference_client import ThoughtReferenceClient
+        thought_client = ThoughtReferenceClient()
+        target_domains = main_theme.domains if main_theme else ["ai_engineering", "crypto"]
+        injected_thought = thought_client.get_thought_injection(target_domains)
+
+        thought_card = (
+            f'<div style="background: #0f172a; border-left: 4px solid #a855f7; border-radius: 6px; padding: 1.2rem; margin: 1.5rem 0;">\n'
+            f'<p style="margin: 0; font-weight: bold; color: #c084fc; font-size: 1.05em;">📖 科学思想・古典からの示唆: {injected_thought["book"]}</p>\n'
+            f'<blockquote style="margin: 0.5rem 0; font-style: italic; color: #e2e8f0; line-height: 1.6;">\n'
+            f'"{injected_thought["quote"]}"\n'
+            f'</blockquote>\n'
+            f'<p style="margin: 0.5rem 0 0 0; color: #94a3b8; font-size: 0.9em; text-align: right;">―― {injected_thought["author"]}（概念: {injected_thought["concept"]}）</p>\n'
+            f'</div>'
+        )
+
         horizon_body = (
             '<h2>The Philosophical Horizon：10年後の知性と社会構造への問い</h2>\n'
+            f'{thought_card}\n'
             '<p>\n'
             'あらゆる計算プロトコルと生命科学の境界線が溶解した世界で、人間の知性の本質とは何だろうか？\n'
             '数理的なゼロ知識証明が真理の検証を担保し、生体模倣アルゴリズムが自律的に学習を継続する時代において、'
             '私たちが信じる「専門性」という概念そのものが解体されつつある。\n'
             '</p>\n'
             '<p>\n'
+            '我々に突きつけられているのは、「計算可能であること」と「理解すること」の根源的な乖離だ。'
+            '異分野の交差点に立ち、複雑系の境界線を見つめ続ける者だけが、次の10年のパラダイムを形作る権利を得るだろう。\n'
             '越境とは、単なる知識の足し算ではない。それは自らのドメインの「当たり前」を疑い、'
             '未知の他者との対話を通じて新たな認知フレームを獲得する行為だ。'
             'この地殻変動の先にある未来において、あなたはどのような新しい知性の形を描くだろうか？\n'
