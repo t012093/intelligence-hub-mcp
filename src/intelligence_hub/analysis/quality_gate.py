@@ -60,9 +60,18 @@ class QualityGate:
             if not ("系譜" in content or "Lineage" in content or "基本情報" in content):
                 issues.append("Missing research lineage or bibliographic metadata card")
 
+        elif payload.genre == "protocol_security":
+            # Table required
+            if "<table" not in content:
+                issues.append("Missing threat model / exploit comparison table (<table> required)")
+
+            # Threat model / attack analysis required
+            if not ("攻撃" in content or "脅威" in content or "Threat" in content or "Exploit" in content):
+                issues.append("Missing threat model / attack vector analysis")
+
             # Reference link required
             if "<a href=" not in content:
-                issues.append("Missing paper DOI/URL reference link")
+                issues.append("Missing specification reference link")
 
         is_valid = len(issues) == 0
         if not is_valid:

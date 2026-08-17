@@ -78,7 +78,7 @@ async def test_protocol_explainer_generates_security_article(sample_protocol_rec
     assert "プロトコル概要" in content
     assert "1. 背景と設計動機" in content
     assert "2. 技術アーキテクチャ" in content
-    assert "3. 脅威モデルと攻撃耐性" in content
+    assert "3. 過去のハッキング" in content
     assert "<table" in content
     assert "https://ethresear.ch/t/stateless-snarks/9999" in content
 
