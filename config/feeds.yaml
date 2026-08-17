@@ -56,7 +56,7 @@ core_channels:
     category: "medicine"
     name: "medRxiv General Medicine"
     type: "rss"
-    url: "https://connect.biorxiv.org/biorxiv_xml.php?subject=infectious_diseases"
+    url: "https://connect.medrxiv.org/medrxiv_xml.php?subject=infectious_diseases"
     interval_hours: 24
 
   # --- 暗号資産・Web3 (Crypto / Decentralization) ---
@@ -67,11 +67,11 @@ core_channels:
     url: "https://ethresear.ch/posts.rss"
     interval_hours: 12
 
-  - id: "paradigm_research"
+  - id: "vitalik_blog"
     category: "crypto"
-    name: "Paradigm Research Blog"
+    name: "Vitalik Buterin Blog"
     type: "rss"
-    url: "https://www.paradigm.xyz/rss.xml"
+    url: "https://vitalik.eth.limo/feed.xml"
     interval_hours: 24
 
   # --- リバースエンジニアリング / セキュリティ ---
