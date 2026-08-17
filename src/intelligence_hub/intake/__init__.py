@@ -6,12 +6,14 @@ from intelligence_hub.intake.base import BaseFetcher
 from intelligence_hub.intake.rss_fetcher import RSSFetcher
 from intelligence_hub.intake.hn_fetcher import HackerNewsFetcher
 from intelligence_hub.intake.academic_fetcher import AcademicFetcher
+from intelligence_hub.intake.github_fetcher import GitHubFetcher
 
 __all__ = [
     "BaseFetcher",
     "RSSFetcher",
     "HackerNewsFetcher",
     "AcademicFetcher",
+    "GitHubFetcher",
     "get_fetcher_for_channel",
 ]
 
@@ -24,5 +26,6 @@ def get_fetcher_for_channel(channel: FeedChannelConfig) -> Optional[BaseFetcher]
         return HackerNewsFetcher()
     elif channel.type == "arxiv_query":
         return AcademicFetcher()
-    # github_trending will be added in Phase 2
+    elif channel.type == "github_trending":
+        return GitHubFetcher()
     return None
