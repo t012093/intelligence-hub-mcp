@@ -26,6 +26,7 @@ dev = [
 [project.scripts]
 intelligence-hub-mcp = "intelligence_hub.mcp.server:main"
 intelligence-hub-cron = "intelligence_hub.scheduler:main"
+intelligence-hub-publish = "intelligence_hub.publishing.pipeline:main"
 
 [build-system]
 requires = ["hatchling"]
