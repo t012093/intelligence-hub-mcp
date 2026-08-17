@@ -16,6 +16,10 @@ logger = get_logger(__name__)
 
 DEFAULT_AUTHOR_ID = "a51cc056-5604-47d2-88ea-4647e4c46411"  # Naoya Kusunoki
 DEFAULT_CORAL_API_URL = os.getenv("CORAL_API_URL", "http://127.0.0.1:3001/api/articles")
+DEFAULT_CORAL_API_TOKEN = os.getenv(
+    "CORAL_API_TOKEN",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJlbWFpbCI6ImFkbWluQGNvcmFsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NjMzNzQ4NiwiZXhwIjoxODE3ODczNDg2LCJhdWQiOiJjb3JhbC1mcm9udGVuZCIsImlzcyI6ImNvcmFsLWJhY2tlbmQifQ.KxtBCDkpshKLGGiGc7fJRyeRifwIA6bzjZzVrQgulQg",
+)
 
 
 class CoralPublisher:
@@ -24,10 +28,12 @@ class CoralPublisher:
     def __init__(
         self,
         api_url: Optional[str] = None,
+        api_token: Optional[str] = None,
         author_id: Optional[str] = None,
         database_url: Optional[str] = None,
     ):
         self.api_url = api_url or DEFAULT_CORAL_API_URL
+        self.api_token = api_token or DEFAULT_CORAL_API_TOKEN
         self.author_id = author_id or DEFAULT_AUTHOR_ID
         self.database_url = database_url or os.getenv("DATABASE_URL") or os.getenv("CORAL_DATABASE_URL")
 
@@ -159,8 +165,12 @@ class CoralPublisher:
 
         # Try HTTP API
         try:
+            headers = {"Content-Type": "application/json"}
+            if self.api_token:
+                headers["Authorization"] = f"Bearer {self.api_token}"
+
             async with httpx.AsyncClient(timeout=15.0) as client:
-                resp = await client.post(self.api_url, json=payload)
+                resp = await client.post(self.api_url, json=payload, headers=headers)
                 if resp.status_code in (200, 201):
                     logger.info("Successfully drafted article via Coral News API.")
                     return {"status": "success", "mode": "api", "payload": payload, "response": resp.json()}
