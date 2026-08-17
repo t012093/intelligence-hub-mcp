@@ -12,7 +12,7 @@ from google import genai
 
 from intelligence_hub.core.config import GEMINI_API_KEY, LLM_MODEL
 from intelligence_hub.core.logger import get_logger
-from intelligence_hub.core.models import CrossoverDigest, CrossoverTheme
+from intelligence_hub.core.models import ArticlePayload, CrossoverDigest, CrossoverTheme
 from intelligence_hub.analysis.prompts import CORAL_WIRED_ARTICLE_PROMPT
 
 logger = get_logger(__name__)
@@ -247,30 +247,57 @@ class CoralPublisher:
 
         return [t1, t2, t3]
 
-    async def publish(self, digest: CrossoverDigest, status: str = "draft") -> Dict[str, Any]:
-        """Publishes the article via HTTP API or direct DB if configured."""
-        payload = await self.format_article_payload(digest, status=status)
+    def generate_x_threads_for_tech(self, payload: ArticlePayload) -> List[str]:
+        """Generates a 3-part technical thread for X (Twitter)."""
+        clean_title = payload.title.replace("【急上昇OSS】", "").strip()
 
-        logger.info(f"Publishing article to Coral News: '{payload['title']}' (status={status})")
+        t1 = (
+            f"🔥【急上昇OSS解剖】{clean_title}\n\n"
+            f"{payload.excerpt}\n\n"
+            f"アーキテクチャ・使い方・比較スレッド 🧵👇"
+        )
 
-        # Try HTTP API
+        t2 = (
+            f"💡 主なポイント:\n"
+            f"・高速化・省メモリの独自アーキテクチャ\n"
+            f"・1コマンドで即時導入可能なクイックスタート\n"
+            f"・既存ツールとの定量ベンチマーク比較"
+        )
+
+        t3 = (
+            f"📖 詳細なコード例とアーキテクチャ解説はこちらからご覧いただけます。\n"
+            f"#OSS #GitHub #開発トレンド #TechDeepDive #CoralMagazine"
+        )
+
+        return [t1, t2, t3]
+
+    async def publish_payload(self, payload: ArticlePayload) -> Dict[str, Any]:
+        """Publishes an ArticlePayload directly to Coral Magazine API."""
+        payload_dict = payload.model_dump()
+        logger.info(f"Publishing article to Coral News: '{payload.title}' (genre={payload.genre})")
+
         try:
             headers = {"Content-Type": "application/json"}
             if self.api_token:
                 headers["Authorization"] = f"Bearer {self.api_token}"
 
             async with httpx.AsyncClient(timeout=15.0) as client:
-                resp = await client.post(self.api_url, json=payload, headers=headers)
+                resp = await client.post(self.api_url, json=payload_dict, headers=headers)
                 if resp.status_code in (200, 201):
-                    logger.info("Successfully drafted article via Coral News API.")
-                    return {"status": "success", "mode": "api", "payload": payload, "response": resp.json()}
+                    logger.info("Successfully published article via Coral News API.")
+                    return {"status": "success", "mode": "api", "payload": payload_dict, "response": resp.json()}
         except Exception as e:
-            logger.debug(f"HTTP API publish failed ({e}). Attempting database direct write or payload output.")
+            logger.debug(f"HTTP API publish failed ({e}). Returning ready payload.")
 
-        # Fallback: return formatted payload for manual/MCP dispatch
         return {
             "status": "ready",
             "mode": "payload_ready",
             "message": "Article formatted and ready for Neon DB insertion.",
-            "payload": payload,
+            "payload": payload_dict,
         }
+
+    async def publish(self, digest: CrossoverDigest, status: str = "draft") -> Dict[str, Any]:
+        """Publishes the crossover article via HTTP API or direct DB if configured."""
+        payload_dict = await self.format_article_payload(digest, status=status)
+        payload = ArticlePayload(**payload_dict, genre="crossover_feature")
+        return await self.publish_payload(payload)

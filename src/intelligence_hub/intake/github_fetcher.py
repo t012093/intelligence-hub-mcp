@@ -51,7 +51,60 @@ class GitHubFetcher(BaseFetcher):
         logger.info(
             f"Fetched {len(all_records)} repos from GitHub for {channel.name} (limit={limit})"
         )
-        return all_records[:limit]
+        selected_records = all_records[:limit]
+
+        # Deep Fetch: enrich top repositories with actual README contents
+        await self._deep_fetch_readmes(selected_records[:5])
+        return selected_records
+
+    async def _deep_fetch_readmes(self, records: List[IntelligenceRecord]) -> None:
+        """Asynchronously fetches README excerpts for top repositories."""
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
+            tasks = [self._fetch_single_readme(client, r) for r in records]
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def _fetch_single_readme(
+        self, client: httpx.AsyncClient, record: IntelligenceRecord
+    ) -> None:
+        """Fetches README.md from raw.githubusercontent.com trying main, master, and develop branches."""
+        if not record.url or "github.com/" not in record.url:
+            return
+
+        parts = record.url.rstrip("/").split("github.com/")[-1].split("/")
+        if len(parts) < 2:
+            return
+
+        owner, repo = parts[0], parts[1]
+        branches = ["main", "master", "develop"]
+
+        for branch in branches:
+            raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md"
+            try:
+                resp = await client.get(raw_url)
+                if resp.status_code == 200 and resp.text:
+                    content = resp.text.strip()
+                    # Extract up to 3500 chars, prioritizing Usage / Features if present
+                    extracted = self._extract_readme_summary(content)
+                    record.raw_content = extracted
+                    logger.debug(
+                        f"Deep Fetch: retrieved README for {owner}/{repo} ({len(extracted)} chars)"
+                    )
+                    return
+            except Exception as e:
+                logger.debug(f"Deep Fetch failed for {raw_url}: {e}")
+
+    def _extract_readme_summary(self, readme_text: str, max_chars: int = 3500) -> str:
+        """Extracts meaningful summary from README prioritizing Features, Usage, Quick Start."""
+        lines = readme_text.split("\n")
+        cleaned_lines = []
+        for line in lines:
+            # Skip badge links or excessive image tags
+            if line.strip().startswith("[![") or "<img" in line:
+                continue
+            cleaned_lines.append(line)
+
+        cleaned_text = "\n".join(cleaned_lines)
+        return cleaned_text[:max_chars].strip()
 
     async def _fetch_for_language(
         self, channel: FeedChannelConfig, language: str
