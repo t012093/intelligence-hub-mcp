@@ -51,10 +51,9 @@ async def test_paper_explainer_generates_academic_article(sample_paper_record):
 
     content = payload.content
     assert "論文サマリー" in content
-    assert "1. 先行研究の限界" in content
+    assert "1. 研究の系譜" in content
     assert "2. 提案手法の数理" in content
-    assert "3. 実験結果とベンチマーク定量数値" in content
-    assert "4. 実用化への課題と今後の展望" in content
+    assert "3. 具体的データセット" in content
     assert "<table" in content
     assert "https://arxiv.org/abs/2408.12345" in content
 

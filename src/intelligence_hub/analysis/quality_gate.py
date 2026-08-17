@@ -48,6 +48,14 @@ class QualityGate:
                 issues.append("Missing primary source reference links")
 
         elif payload.genre == "paper_digest":
+            # Table required
+            if "<table" not in content:
+                issues.append("Missing benchmark comparison table (<table> required)")
+
+            # Lineage or Bibliographic card required
+            if not ("系譜" in content or "Lineage" in content or "基本情報" in content):
+                issues.append("Missing research lineage or bibliographic metadata card")
+
             # Reference link required
             if "<a href=" not in content:
                 issues.append("Missing paper DOI/URL reference link")
