@@ -56,10 +56,15 @@ class IntelligenceSynthesizer:
         all_suggested_themes = list(
             {th for t in crossover_themes for th in t.suggested_themes}
         ) or ["テクノロジー"]
-        all_suggested_tags = list(
-            {tg for t in crossover_themes for tg in t.suggested_tags}
-            | {r.category for r in all_records}
-        )
+        tags_set = set()
+        for t in crossover_themes:
+            tags_set.update(t.suggested_tags or [])
+        for r in all_records:
+            if r.category:
+                tags_set.add(r.category)
+            tags_set.update(r.tags or [])
+        tags_set.add("Crossover")
+        all_suggested_tags = [t for t in sorted(tags_set) if t]
 
         return CrossoverDigest(
             digest_id=digest_id,
@@ -77,7 +82,7 @@ class IntelligenceSynthesizer:
             markdown_report=markdown_report,
             suggested_themes=all_suggested_themes,
             suggested_tags=all_suggested_tags,
-            source_records=[r.id for r in all_records],
+            source_records=[r.url for r in all_records if r.url],
         )
 
     async def _generate_report(
