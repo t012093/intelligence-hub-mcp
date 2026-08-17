@@ -38,12 +38,14 @@ async def test_tech_explainer_generates_concrete_article(sample_oss_record):
     assert len(payload.excerpt) <= 120
 
     content = payload.content
-    # Must contain TL;DR, Problem, How it works, Usage, Table
+    # Must contain TL;DR, Problem, How it works, Usage, Table, Release, Gotchas
     assert "TL;DR" in content
     assert "1. 解決する課題" in content
     assert "2. アーキテクチャ" in content
     assert "3. インストール ＆ クイックスタート" in content
     assert "4. 既存ツールとの定量比較" in content
+    assert "5. 最新リリース" in content
+    assert "6. 実運用における注意点" in content
     assert "<table" in content
     assert "<code" in content
     assert "pip install" in content
@@ -56,7 +58,7 @@ def test_quality_gate_validation():
     valid_payload = ArticlePayload(
         title="【急上昇OSS】Unsloth の実践解説",
         slug="tech-unsloth",
-        content="<h2>TL;DR</h2><p>Overview</p><pre><code class=\"language-bash\">pip install unsloth</code></pre><table><tr><td>Metric</td></tr></table>" * 5,
+        content="<h2>TL;DR</h2><p>Overview</p><pre><code class=\"language-bash\">pip install unsloth</code></pre><table><tr><td>Metric</td></tr></table><p>実運用における注意点: メモリ消費</p>" * 5,
         excerpt="Summary",
         status="draft",
         genre="tech_deep_dive",

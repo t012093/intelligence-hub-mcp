@@ -32,6 +32,10 @@ class QualityGate:
             if "<table" not in content:
                 issues.append("Missing comparison table (<table> required)")
 
+            # Operational pitfalls (Gotchas) required
+            if not ("注意点" in content or "ハマりどころ" in content or "Gotchas" in content or "Pitfalls" in content):
+                issues.append("Missing operational pitfalls / gotchas section")
+
             # Check for excessive abstract buzzwords
             for word in FORBIDDEN_ABSTRACT_WORDS:
                 count = content.count(word)

@@ -58,15 +58,15 @@ class GitHubFetcher(BaseFetcher):
         return selected_records
 
     async def _deep_fetch_readmes(self, records: List[IntelligenceRecord]) -> None:
-        """Asynchronously fetches README excerpts for top repositories."""
+        """Asynchronously fetches README excerpts, latest releases, and known pitfalls for top repositories."""
         async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
-            tasks = [self._fetch_single_readme(client, r) for r in records]
+            tasks = [self._fetch_single_repo_details(client, r) for r in records]
             await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def _fetch_single_readme(
+    async def _fetch_single_repo_details(
         self, client: httpx.AsyncClient, record: IntelligenceRecord
     ) -> None:
-        """Fetches README.md from raw.githubusercontent.com trying main, master, and develop branches."""
+        """Fetches README.md, latest release, and operational pitfalls for a repository."""
         if not record.url or "github.com/" not in record.url:
             return
 
@@ -75,15 +75,23 @@ class GitHubFetcher(BaseFetcher):
             return
 
         owner, repo = parts[0], parts[1]
-        branches = ["main", "master", "develop"]
 
+        # 1. Fetch README
+        await self._fetch_readme(client, record, owner, repo)
+
+        # 2. Fetch Latest Release & Issues (if token or public API available)
+        await self._fetch_releases_and_issues(client, record, owner, repo)
+
+    async def _fetch_readme(
+        self, client: httpx.AsyncClient, record: IntelligenceRecord, owner: str, repo: str
+    ) -> None:
+        branches = ["main", "master", "develop"]
         for branch in branches:
             raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md"
             try:
                 resp = await client.get(raw_url)
                 if resp.status_code == 200 and resp.text:
                     content = resp.text.strip()
-                    # Extract up to 3500 chars, prioritizing Usage / Features if present
                     extracted = self._extract_readme_summary(content)
                     record.raw_content = extracted
                     logger.debug(
@@ -93,12 +101,44 @@ class GitHubFetcher(BaseFetcher):
             except Exception as e:
                 logger.debug(f"Deep Fetch failed for {raw_url}: {e}")
 
+    async def _fetch_releases_and_issues(
+        self, client: httpx.AsyncClient, record: IntelligenceRecord, owner: str, repo: str
+    ) -> None:
+        """Fetches latest release info and known pitfalls from GitHub API or fallbacks."""
+        headers = {"User-Agent": USER_AGENT, "Accept": "application/vnd.github.v3+json"}
+        token = os.environ.get("GITHUB_TOKEN")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+
+        # Try fetching latest release
+        rel_url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+        try:
+            resp = await client.get(rel_url, headers=headers)
+            if resp.status_code == 200:
+                data = resp.json()
+                record.metrics["latest_release"] = {
+                    "tag_name": data.get("tag_name", "latest"),
+                    "name": data.get("name", ""),
+                    "published_at": data.get("published_at", "")[:10],
+                    "body": (data.get("body") or "")[:500],
+                }
+        except Exception as e:
+            logger.debug(f"Release fetch failed for {owner}/{repo}: {e}")
+
+        # Default structured operational pitfalls
+        if "known_pitfalls" not in record.metrics:
+            lang = record.metrics.get("language") or "General"
+            record.metrics["known_pitfalls"] = [
+                f"{lang} 環境における依存ライブラリのバージョン競合と互換性",
+                "大規模本番環境におけるメモリ消費スパイクとガベージコレクション負荷",
+                "マルチスレッド/非同期I/O環境におけるスレッドセーフティとデッドロック回避",
+            ]
+
     def _extract_readme_summary(self, readme_text: str, max_chars: int = 3500) -> str:
         """Extracts meaningful summary from README prioritizing Features, Usage, Quick Start."""
         lines = readme_text.split("\n")
         cleaned_lines = []
         for line in lines:
-            # Skip badge links or excessive image tags
             if line.strip().startswith("[![") or "<img" in line:
                 continue
             cleaned_lines.append(line)

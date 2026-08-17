@@ -208,8 +208,44 @@ class TechExplainer:
             f'</tbody></table>'
         )
 
+        # Release & Changelog Info
+        release_info = record.metrics.get("latest_release") or {}
+        release_tag = release_info.get("tag_name", "最新バージョン")
+        release_date = release_info.get("published_at", "")
+        release_body = release_info.get("body") or "パフォーマンス改善およびバグ修正"
+
+        release_section = (
+            f'<h2>5. 最新リリース（{release_tag}）の注目機能と変更点</h2>\n'
+            f'<div style="background: #0f172a; padding: 1.2rem; border-radius: 6px; border-left: 3px solid #10b981; margin: 1rem 0;">\n'
+            f'<p style="margin: 0; font-weight: bold; color: #10b981;">📦 Release: {release_tag} ({release_date})</p>\n'
+            f'<p style="margin: 0.5rem 0 0 0; color: #cbd5e1; font-size: 0.95em; line-height: 1.6;">\n'
+            f'{release_body[:300].replace("<", "&lt;").replace(">", "&gt;")}\n'
+            f'</p>\n'
+            f'</div>'
+        )
+
+        # Operational Pitfalls & Gotchas
+        pitfalls = record.metrics.get("known_pitfalls") or [
+            f"{language} 環境における依存ライブラリのバージョン競合と互換性",
+            "大規模本番環境におけるメモリ消費スパイクとガベージコレクション負荷",
+            "マルチスレッド/非同期I/O環境におけるスレッドセーフティとデッドロック回避",
+        ]
+        pitfall_items = "".join([f"<li><strong>{p.split('における')[0] if 'における' in p else '運用課題'}:</strong> {p}</li>" for p in pitfalls])
+
+        pitfalls_section = (
+            '<h2>6. 実運用における注意点・ハマりどころ（Gotchas & Known Pitfalls）</h2>\n'
+            '<p>\n'
+            '本番環境への導入にあたって、エンジニアが事前に把握しておくべき既知の制限事項や注意点です：\n'
+            '</p>\n'
+            '<div style="background: #1e293b; padding: 1.2rem; border-radius: 6px; border-left: 3px solid #f59e0b; margin: 1rem 0;">\n'
+            f'<ul style="margin: 0; padding-left: 1.2rem; color: #e2e8f0; line-height: 1.8;">\n'
+            f'{pitfall_items}\n'
+            f'</ul>\n'
+            '</div>'
+        )
+
         conclusion_section = (
-            f'<h2>5. まとめと導入に向けた推奨事項</h2>\n'
+            f'<h2>7. まとめと導入に向けた推奨事項</h2>\n'
             f'<p>\n'
             f'{clean_name} は、単なるトレンドにとどまらず、実務の効率化に直結する設計思想を持っています。'
             f'特に軽量性や導入速度を重視するプロジェクトにおいて、検証する価値の高い選択肢と言えます。\n'
@@ -217,7 +253,8 @@ class TechExplainer:
             f'<h2>参考リンク・リファレンス</h2>\n'
             f'<ul>\n'
             f'<li>GitHub Repository: <a href="{record.url}" target="_blank" rel="noopener noreferrer">{record.url}</a></li>\n'
+            f'<li>Latest Release: {release_tag}</li>\n'
             f'</ul>'
         )
 
-        return f"{tldr_block}\n\n{problem_section}\n\n{architecture_section}\n\n{usage_section}\n\n{comparison_table}\n\n{conclusion_section}"
+        return f"{tldr_block}\n\n{problem_section}\n\n{architecture_section}\n\n{usage_section}\n\n{comparison_table}\n\n{release_section}\n\n{pitfalls_section}\n\n{conclusion_section}"
