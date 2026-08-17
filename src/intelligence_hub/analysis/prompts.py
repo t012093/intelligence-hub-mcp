@@ -1,4 +1,4 @@
-"""Prompt templates for crossover, tech deep-dive, and multi-domain intelligence synthesis."""
+"""Prompt templates for crossover, tech deep-dive, academic paper digest, and protocol security synthesis."""
 
 TECH_DEEP_DIVE_PROMPT = """あなたは最前線で活躍するシニア・テックリード兼テクニカルライターです。
 
@@ -34,6 +34,67 @@ TECH_DEEP_DIVE_PROMPT = """あなたは最前線で活躍するシニア・テ�
    - コードスニペットのない抽象論だけの記事は【完全厳禁】。
 
 3. **文字数**: 日本語で 1,800〜3,000文字。
+
+HTML本文のみ出力してください。
+"""
+
+PAPER_DIGEST_PROMPT = """あなたは一流のAI・サイエンスリサーチャー兼テクニカルライターです。
+
+以下のプレプリント論文データ（タイトル、著者、Abstract、分野、URL）を元に、
+リサーチャーや技術者が「最新理論の核心と実用的ブレークスルーを即座に理解できる」【先端論文解説記事（HTML形式）】を執筆してください。
+
+【対象論文データ】
+■ 論文タイトル: {title}
+■ 分野/カテゴリ: {category}
+■ 著者/機関: {author}
+■ URL / DOI: {url}
+■ 概要 (Abstract):
+{abstract}
+
+---
+【執筆の厳格ルール（学術的正確性と定量的論証）】
+
+1. **構成テンプレート（以下の見出し構成を厳守）**:
+   - **論文サマリー**: `<div style="background: #1e293b; padding: 1.2rem; border-left: 4px solid #10b981; margin-bottom: 1.5rem;">` 内に、著者の主張と主要な貢献を3行で要約。
+   - **<h2>1. 先行研究の限界と未解決課題（The Limitations）</h2>**: 従来手法が抱えていたボトルネックや理論的限界。
+   - **<h2>2. 提案手法の数理・モデル構造（Proposed Methodology）</h2>**: 新規提案されたアルゴリズム、アーキテクチャ、数式や損失関数の工夫。
+   - **<h2>3. 実験結果とベンチマーク定量数値（Experimental Results）</h2>**:
+     - ベースライン手法との性能比較テーブル（`<table style="width:100%; border-collapse: collapse; margin: 1.5rem 0;">...</table>`）を必ず含める。
+     - 精度向上率（%）、計算コスト削減値、レイテンシ等の具体的な数値を明記。
+   - **<h2>4. 実用化への課題と今後の展望（Discussion & Future Work）</h2>**: 実世界応用やエンジニアリング実装における課題。
+   - **<h2>参考文献・論文リンク</h2>**: arXiv / DOI リンク。
+
+2. **文字数**: 日本語で 2,000〜3,500文字。
+
+HTML本文のみ出力してください。
+"""
+
+PROTOCOL_SECURITY_PROMPT = """あなたは暗号プロトコルおよび低レイヤーセキュリティのトップアナリストです。
+
+以下のプロトコル/低レイヤーデータ（タイトル、著者、概要、ソースURL）を元に、
+Web3エンジニアやセキュリティ開発者が「アーキテクチャの安全性と攻撃耐性を深く検証できる」【プロトコル・セキュリティ構造論記事（HTML形式）】を執筆してください。
+
+【対象データ】
+■ タイトル: {title}
+■ カテゴリ/分野: {category}
+■ 発信元/著者: {author}
+■ URL: {url}
+■ 概要/ディスカッション詳細:
+{details}
+
+---
+【執筆の厳格ルール（アーキテクチャと攻撃耐性の徹底解剖）】
+
+1. **構成テンプレート（以下の見出し構成を厳守）**:
+   - **プロトコル概要**: `<div style="background: #1e293b; padding: 1.2rem; border-left: 4px solid #f59e0b; margin-bottom: 1.5rem;">` 内に、設計動機と中核の仕組みを要約。
+   - **<h2>1. 背景と設計動機（Motivation & Context）</h2>**: なぜこのプロトコル仕様や解析手法が必要とされているのか。
+   - **<h2>2. 技術アーキテクチャと暗号学的仕組み（Technical Architecture）</h2>**:
+     - ゼロ知識証明回路、ステート遷移モデル、メモリレイアウト、命令セット等の詳細構造。
+   - **<h2>3. 脅威モデルと攻撃耐性（Threat Model & Security）</h2>**:
+     - 想定される攻撃ベクトル（Reentrancy, MEV, Buffer Overflow, サイドチャネル攻撃等）と、それに対する防御策。
+   - **<h2>4. 仕様・実装リファレンス</h2>**: EIP番号、ホワイトペーパー、PoCリポジトリリンク。
+
+2. **文字数**: 日本語で 2,000〜3,500文字。
 
 HTML本文のみ出力してください。
 """

@@ -271,6 +271,48 @@ class CoralPublisher:
 
         return [t1, t2, t3]
 
+    def generate_x_threads_for_paper(self, payload: ArticlePayload) -> List[str]:
+        """Generates a 3-part academic paper thread for X (Twitter)."""
+        clean_title = payload.title.replace("【最新論文解説】", "").strip()
+
+        t1 = (
+            f"🔬【先端論文速報】{clean_title}\n\n"
+            f"{payload.excerpt}\n\n"
+            f"先行研究の課題・提案手法・ベンチマークスレッド 🧵👇"
+        )
+        t2 = (
+            f"📊 主要な貢献:\n"
+            f"・既存モデルのボトルネックを打破する新規アルゴリズム\n"
+            f"・定量ベンチマークにおける精度/効率の向上\n"
+            f"・実世界応用への展望と課題"
+        )
+        t3 = (
+            f"📄 詳細な実験比較テーブルと論文解説全文はこちら。\n"
+            f"#arXiv #AI #サイエンス #論文解説 #CoralMagazine"
+        )
+        return [t1, t2, t3]
+
+    def generate_x_threads_for_protocol(self, payload: ArticlePayload) -> List[str]:
+        """Generates a 3-part protocol/security thread for X (Twitter)."""
+        clean_title = payload.title.replace("【プロトコル解剖】", "").strip()
+
+        t1 = (
+            f"🛡️【プロトコル構造論】{clean_title}\n\n"
+            f"{payload.excerpt}\n\n"
+            f"暗号学的仕組み・脅威モデル・攻撃耐性スレッド 🧵👇"
+        )
+        t2 = (
+            f"🔐 検証ポイント:\n"
+            f"・分散合意 / ゼロ知識証明によるステート検証\n"
+            f"・MEV / Reentrancy / DoS 攻撃耐性の数理的保証\n"
+            f"・EIP / 実装リファレンスの構造"
+        )
+        t3 = (
+            f"🔍 脅威モデル比較表とプロトコル仕様の全文はこちら。\n"
+            f"#Web3 #Security #Crypto #低レイヤー #CoralMagazine"
+        )
+        return [t1, t2, t3]
+
     async def publish_payload(self, payload: ArticlePayload) -> Dict[str, Any]:
         """Publishes an ArticlePayload directly to Coral Magazine API."""
         payload_dict = payload.model_dump()
